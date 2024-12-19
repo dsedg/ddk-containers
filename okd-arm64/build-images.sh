@@ -210,7 +210,7 @@ containernetworking_plugins_microshift_image() {
   sed -i 's|dnf install -y |dnf --disablerepo=rt install -y |' "$dockerfile_path"
   
   podman build --platform linux/arm64 -t "${images[containernetworking-plugins-microshift]}" -f "$dockerfile_path" .
-  podman push "${images[containernetworking-plugins-microshift}"
+  podman push "${images[containernetworking-plugins-microshift]}"
 
   cd ..
   rm -fr $repo

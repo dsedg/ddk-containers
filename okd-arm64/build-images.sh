@@ -61,7 +61,7 @@ router_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply sed commands for both Dockerfiles in router repo
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_base_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_base_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_base_path"
   
   podman build --platform linux/arm64 -t "${images[haproxy-router-base]}" -f "$dockerfile_base_path" .
@@ -88,7 +88,7 @@ kube_proxy_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply sed commands for both Dockerfiles in router repo
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
   sed -i 's|yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS|yum --disablerepo=rt install -y --setopt=tsflags=nodocs $INSTALL_PKGS|' "$dockerfile_path"
 
@@ -110,7 +110,7 @@ coredns_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the coredns Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
 
   podman build --platform linux/arm64 -t "${images[coredns]}" -f "$dockerfile_path" .
@@ -131,13 +131,13 @@ csi_external_snapshotter_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for both Dockerfiles
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_snapshot_controller_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_snapshot_controller_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_snapshot_controller_path"
   
   podman build --platform linux/arm64 -t "${images[csi-snapshot-controller]}" -f "$dockerfile_snapshot_controller_path" .
   podman push "${images[csi-snapshot-controller]}"
   
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_webhook_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_webhook_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_webhook_path"
 
   podman build --platform linux/arm64 -t "${images[csi-snapshot-validation-webhook]}" -f "$dockerfile_webhook_path" .
@@ -157,12 +157,40 @@ kube_rbac_proxy_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the kube-rbac-proxy Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
 
   podman build --platform linux/arm64 -t "${images[kube-rbac-proxy]}" -f "$dockerfile_path" .
   podman push "${images[kube-rbac-proxy]}"
   
+  cd ..
+  rm -fr $repo
+}
+
+
+# Function to handle ovn-kubernetes-microshift-image repository
+ovn_kubernetes_base_image() {
+  local repo_url="https://github.com/openshift/ovn-kubernetes"
+  local dockerfile_base_path="Dockerfile.base"
+  local dockerfile_ovn_path="Dockerfile.microshift"
+  local repo=$(basename ${repo_url})
+
+  git clone --branch "$BRANCH" --single-branch "$repo_url"
+  cd $repo || { echo "Failed to access repo directory"; return 1; }
+
+  # Apply sed commands for both Dockerfiles in router repo
+  sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_base_path"
+  sed -i 's|dnf install -y |dnf --disablerepo=rt install -y |' "$dockerfile_base_path"
+  
+  podman build --platform linux/arm64 -t "${images[ovn-kubernetes-base]}" -f "$dockerfile_base_path" .
+  podman push "${images[ovn-kubernetes-base]}"
+  
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_ovn_path"
+  sed -i "s|^FROM registry.ci.openshift.org/ocp/.*|FROM quay.io/redhat_emp1/okd-arm/ovn-kubernetes-base:${OKD_VERSION}|" "$dockerfile_ovn_path"
+
+  podman build --platform linux/arm64 -t "${images[dockerfile_ovn_path]}" -f "$dockerfile_ovn_path" .
+  podman push "${images[dockerfile_ovn_path]}"
+
   cd ..
   rm -fr $repo
 }
@@ -177,7 +205,7 @@ pod_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the pod Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
 
   pushd build/pause && podman build --platform linux/arm64 -t "${images[pod]}" -f $(basename "$dockerfile_path") . &&  popd
@@ -197,7 +225,7 @@ cli_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the cli Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
 
   podman build --platform linux/arm64 -t "${images[cli]}" -f "$dockerfile_path" .
@@ -217,7 +245,7 @@ service_ca_operator_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the service-ca-operator Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.19 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
 
   podman build --platform linux/arm64 -t "${images[service-ca-operator]}" -f "$dockerfile_path" .
@@ -262,6 +290,7 @@ update_images() {
   pod_image
   cli_image
   service_ca_operator_image
+  ovn_kubernetes_base_image
 }
 
 # Declare an associative array
@@ -280,6 +309,10 @@ images=(
     [kube-rbac-proxy]="quay.io/redhat_emp1/okd-arm/kube-rbac-proxy:${OKD_VERSION}"
     [pod]="quay.io/redhat_emp1/okd-arm/pod:${OKD_VERSION}"
     [service-ca-operator]="quay.io/redhat_emp1/okd-arm/service-ca-operator:${OKD_VERSION}"
+    [ovn-kubernetes-microshift]="quay.io/redhat_emp1/okd-arm/ovn-kubernetes-microshift:${OKD_VERSION}"
+    [ovn-kubernetes-base]="quay.io/redhat_emp1/okd-arm/ovn-kubernetes-base:${OKD_VERSION}"
+    [containernetworking-plugins-microshift]="quay.io/redhat_emp1/okd-arm/containernetworking-plugins-microshif:${OKD_VERSION}"
+    []ovn-kubernetes-microshift
 )
 
 # check the install process

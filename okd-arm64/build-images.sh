@@ -230,7 +230,7 @@ multus_cni_microshift_image() {
   sed -i 's|dnf install -y |dnf --disablerepo=rt install -y |' "$dockerfile_path"
   
   podman build --platform linux/arm64 -t "${images[multus-cni-microshift]}" -f "$dockerfile_path" .
-  podman push "${images[multus-cni-microshift}"
+  podman push "${images[multus-cni-microshift]}"
 
   cd ..
   rm -fr $repo

@@ -169,7 +169,7 @@ kube_rbac_proxy_image() {
 
 
 # Function to handle ovn-kubernetes-microshift-image repository
-ovn_kubernetes_base_image() {
+ovn_kubernetes_image() {
   local repo_url="https://github.com/openshift/ovn-kubernetes"
   local dockerfile_base_path="Dockerfile.base"
   local dockerfile_ovn_path="Dockerfile.microshift"
@@ -188,8 +188,8 @@ ovn_kubernetes_base_image() {
   sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_ovn_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*|FROM quay.io/redhat_emp1/okd-arm/ovn-kubernetes-base:${OKD_VERSION}|" "$dockerfile_ovn_path"
 
-  podman build --platform linux/arm64 -t "${images[dockerfile_ovn_path]}" -f "$dockerfile_ovn_path" .
-  podman push "${images[dockerfile_ovn_path]}"
+  podman build --platform linux/arm64 -t "${images[ovn-kubernetes-base]}" -f "$dockerfile_ovn_path" .
+  podman push "${images[ovn-kubernetes-base]}"
 
   cd ..
   rm -fr $repo
@@ -331,7 +331,7 @@ update_images() {
   pod_image
   cli_image
   service_ca_operator_image
-  ovn_kubernetes_base_image
+  ovn_kubernetes_image
   containernetworking_plugins_microshift_image
   multus_cni_microshift_image
 }

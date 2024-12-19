@@ -205,7 +205,7 @@ containernetworking_plugins_microshift_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the service-ca-operator Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.21-openshift-4.16 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.21-openshift-4.16 AS rhel9 |' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
   sed -i 's|dnf install -y |dnf --disablerepo=rt install -y |' "$dockerfile_path"
   
@@ -225,7 +225,7 @@ multus_cni_microshift_image() {
   cd $repo || { echo "Failed to access repo directory"; return 1; }
 
   # Apply the sed commands for the service-ca-operator Dockerfile
-  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.21-openshift-4.16 AS builder|' "$dockerfile_path"
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.21-openshift-4.16 AS rhel9|' "$dockerfile_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
   sed -i 's|dnf install -y |dnf --disablerepo=rt install -y |' "$dockerfile_path"
   

@@ -195,6 +195,44 @@ ovn_kubernetes_base_image() {
   rm -fr $repo
 }
 
+# Function to handle containernetworking-plugins repository
+containernetworking_plugins_microshift_image() {
+  local repo_url="https://github.com/openshift/containernetworking-plugins"
+  local dockerfile_path="Dockerfile.microshift"
+  local repo=$(basename ${repo_url})
+
+  git clone --branch "$BRANCH" --single-branch "$repo_url"
+  cd $repo || { echo "Failed to access repo directory"; return 1; }
+
+  # Apply the sed commands for the service-ca-operator Dockerfile
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.21-openshift-4.16 AS builder|' "$dockerfile_path"
+  sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
+
+  podman build --platform linux/arm64 -t "${images[containernetworking-plugins-microshift]}" -f "$dockerfile_path" .
+  podman push "${images[containernetworking-plugins-microshift}"
+
+  cd ..
+  rm -fr $repo
+}
+# Function to handle multus cni repository
+multus_cni_microshift_image() {
+  local repo_url="https://github.com/openshift/multus-cni"
+  local dockerfile_path="Dockerfile.microshift"
+  local repo=$(basename ${repo_url})
+
+  git clone --branch "$BRANCH" --single-branch "$repo_url"
+  cd $repo || { echo "Failed to access repo directory"; return 1; }
+
+  # Apply the sed commands for the service-ca-operator Dockerfile
+  sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.21-openshift-4.16 AS builder|' "$dockerfile_path"
+  sed -i "s|^FROM registry.ci.openshift.org/ocp/.*:base-rhel9|FROM quay.io/redhat_emp1/okd-arm/scos-${OKD_VERSION}:base-stream9|" "$dockerfile_path"
+
+  podman build --platform linux/arm64 -t "${images[multus-cni-microshift]}" -f "$dockerfile_path" .
+  podman push "${images[multus-cni-microshift}"
+
+  cd ..
+  rm -fr $repo
+}
 # Function to handle pod-image repository
 pod_image() {
   local repo_url="https://github.com/openshift/kubernetes"
@@ -267,15 +305,18 @@ update_image_tag_to_sha() {
 create_new_okd_release() {
     oc adm release new --from-release registry.ci.openshift.org/origin/release-scos:scos-4.17 \
        --keep-manifest-list \
-       cli="${images[cli]}" \
+        cli="${images[cli]}" \
 	haproxy-router="${images[haproxy-router]}" \
 	kube-proxy="${images[kube-proxy]}" \
 	coredns="${images[coredns]}" \
-       csi-snapshot-controller="${images[csi-snapshot-controller]}" \
-       csi-snapshot-validation-webhook="${images[csi-snapshot-validation-webhook]}" \
+        csi-snapshot-controller="${images[csi-snapshot-controller]}" \
+        csi-snapshot-validation-webhook="${images[csi-snapshot-validation-webhook]}" \
 	kube-rbac-proxy="${images[kube-rbac-proxy]}" \
 	pod="${images[pod]}" \
 	service-ca-operator="${images[service-ca-operator]}" \
+        containernetworking-plugins-microshift="${images[containernetworking-plugins-microshift]}" \
+	ovn-kubernetes-microshift="${images[ovn-kubernetes-microshift]}" \
+        multus-cni-microshift="${images[multus-cni-microshift]}" \
 	--to-image quay.io/redhat_emp1/okd-arm/okd-arm-release:${OKD_VERSION}
 }
 
@@ -291,6 +332,8 @@ update_images() {
   cli_image
   service_ca_operator_image
   ovn_kubernetes_base_image
+  containernetworking_plugins_microshift_image
+  multus_cni_microshift_image
 }
 
 # Declare an associative array
@@ -311,8 +354,8 @@ images=(
     [service-ca-operator]="quay.io/redhat_emp1/okd-arm/service-ca-operator:${OKD_VERSION}"
     [ovn-kubernetes-microshift]="quay.io/redhat_emp1/okd-arm/ovn-kubernetes-microshift:${OKD_VERSION}"
     [ovn-kubernetes-base]="quay.io/redhat_emp1/okd-arm/ovn-kubernetes-base:${OKD_VERSION}"
-    [containernetworking-plugins-microshift]="quay.io/redhat_emp1/okd-arm/containernetworking-plugins-microshif:${OKD_VERSION}"
-    []ovn-kubernetes-microshift
+    [containernetworking-plugins-microshift]="quay.io/redhat_emp1/okd-arm/containernetworking-plugins-microshift:${OKD_VERSION}"
+    [multus-cni-microshift]="quay.io/redhat_emp1/okd-arm/multus-cni-microshift:${OKD_VERSION}"
 )
 
 # check the install process

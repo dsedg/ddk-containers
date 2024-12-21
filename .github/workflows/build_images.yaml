@@ -60,8 +60,8 @@ jobs:
         ref: ${{ github.sha }}
     - name: run build-image script
       env:
-        USERNAME: ${{ secrets.USERNAME }}
-        PASSWORD: ${{ secrets.PASSWORD }}
+        USERNAME: ${{ secrets.QUAY_USER }}
+        PASSWORD: ${{ secrets.QUAY_TOKEN }}
       run: |
         pushd okd-arm64
         chmod +x build-images.sh

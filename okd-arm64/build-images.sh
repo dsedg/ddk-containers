@@ -45,6 +45,9 @@ base_image() {
   sed -i 's|^FROM registry.ci.openshift.org/ocp/.*|FROM quay.io/centos/centos:stream9|' "$dockerfile_path"
 
   podman build --platform linux/arm64 -t "${images[base]}" -f "$dockerfile_path" .
+  # Remove RT repo becaus there is no aarch64 for it 
+  sed -i '/dnf config-manager/d' "$dockerfile_path"
+
   podman push "${images[base]}"
 
   cd ..
@@ -320,7 +323,7 @@ create_new_okd_release() {
         containernetworking-plugins-microshift="${images[containernetworking-plugins-microshift]}" \
 	ovn-kubernetes-microshift="${images[ovn-kubernetes-microshift]}" \
         multus-cni-microshift="${images[multus-cni-microshift]}" \
-	--to-image quay.io/redhat_emp1/okd-arm/okd-arm-release:${OKD_VERSION}
+	--to-image ${CONTAINER_REG}/okd-arm-release:${OKD_VERSION}
 }
 
 # Main function to run all the image update functions
@@ -351,8 +354,8 @@ images=(
     [kube-proxy]="${CONTAINER_REG}/kube-proxy:${OKD_VERSION}"
     [coredns]="${CONTAINER_REG}/coredns:${OKD_VERSION}"
     [csi-snapshot-controller]="${CONTAINER_REG}/csi-snapshot-controller:${OKD_VERSION}"
-    [csi-snapshot-validation-webhook]="${CONTAINER_REG}m/csi-snapshot-validation-webhook:${OKD_VERSION}"
-    [kube-rbac-proxy]="${CONTAINER_REG}m/kube-rbac-proxy:${OKD_VERSION}"
+    [csi-snapshot-validation-webhook]="${CONTAINER_REG}/csi-snapshot-validation-webhook:${OKD_VERSION}"
+    [kube-rbac-proxy]="${CONTAINER_REG}/kube-rbac-proxy:${OKD_VERSION}"
     [pod]="${CONTAINER_REG}/pod:${OKD_VERSION}"
     [service-ca-operator]="${CONTAINER_REG}/service-ca-operator:${OKD_VERSION}"
     [ovn-kubernetes-microshift]="${CONTAINER_REG}/ovn-kubernetes-microshift:${OKD_VERSION}"

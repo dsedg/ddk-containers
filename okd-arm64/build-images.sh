@@ -192,8 +192,8 @@ ovn_kubernetes_image() {
   sed -i 's|^FROM registry.ci.openshift.org/ocp/builder.*|FROM registry.ci.openshift.org/openshift/release:rhel-9-release-golang-1.22-openshift-4.17 AS builder|' "$dockerfile_ovn_path"
   sed -i "s|^FROM registry.ci.openshift.org/ocp/.*|FROM ${CONTAINER_REG}/ovn-kubernetes-base:${OKD_VERSION}|" "$dockerfile_ovn_path"
 
-  podman build --platform linux/arm64 -t "${images[ovn-kubernetes-base]}" -f "$dockerfile_ovn_path" .
-  podman push "${images[ovn-kubernetes-base]}"
+  podman build --platform linux/arm64 -t "${images[ovn-kubernetes-microshift]}" -f "$dockerfile_ovn_path" .
+  podman push "${images[ovn-kubernetes-microshift]}"
 
   cd ..
   rm -fr $repo
@@ -366,7 +366,7 @@ images=(
 
 # check the install process
 check_dependency
-#login_to_registry
+login_to_registry
 
 # check if image already exist
 if skopeo inspect --format "Digest: {{.Digest}}" docker://${CONTAINER_REG}/okd-arm-release:${OKD_VERSION}; then

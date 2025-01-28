@@ -1,36 +1,36 @@
 [submodule "openshift-images"]
 	path = openshift-images
-	url = https://github.com/openshift/images
+	url = git@github.com:dsedg/images.git
 [submodule "openshift-router"]
 	path = openshift-router
-	url = https://github.com/openshift/router
+	url = git@github.com:dsedg/router.git
 [submodule "openshift-sdn"]
 	path = openshift-sdn
-	url = https://github.com/openshift/sdn
+	url = git@github.com:dsedg/sdn.git
 [submodule "openshift-coredns"]
 	path = openshift-coredns
-	url = https://github.com/openshift/coredns
+	url = git@github.com:dsedg/coredns.git
 [submodule "openshift-csi-external-snapshotter"]
 	path = openshift-csi-external-snapshotter
-	url = https://github.com/openshift/csi-external-snapshotter
+	url = git@github.com:dsedg/csi-external-snapshotter.git
 [submodule "kube-rbac-proxy"]
 	path = kube-rbac-proxy
-	url = https://github.com/openshift/kube-rbac-proxy
+	url = git@github.com:dsedg/kube-rbac-proxy.git
 [submodule "ovn-kubernetes"]
 	path = ovn-kubernetes
-	url = https://github.com/openshift/ovn-kubernetes
+	url = git@github.com:dsedg/ovn-kubernetes.git
 [submodule "openshift-containernetworking-plugins"]
 	path = openshift-containernetworking-plugins
-	url = https://github.com/openshift/containernetworking-plugins
+	url = git@github.com:dsedg/containernetworking-plugins.git
 [submodule "openshift-multus-cni"]
 	path = openshift-multus-cni
-	url = https://github.com/openshift/multus-cni
+	url = git@github.com:dsedg/multus-cni.git
 [submodule "kubernetes"]
 	path = kubernetes
-	url = https://github.com/openshift/kubernetes
+	url = git@github.com:dsedg/kubernetes.git
 [submodule "openshift-oc"]
 	path = openshift-oc
-	url = https://github.com/openshift/oc
+	url = git@github.com:dsedg/oc.git
 [submodule "openshift-service-ca-operator"]
 	path = openshift-service-ca-operator
-	url = https://github.com/openshift/service-ca-operator
+	url = git@github.com:dsedg/service-ca-operator.git

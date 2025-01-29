@@ -1,36 +1,48 @@
 [submodule "openshift-images"]
 	path = openshift-images
 	url = git@github.com:dsedg/images.git
+	branch = release-4.17
 [submodule "openshift-router"]
 	path = openshift-router
 	url = git@github.com:dsedg/router.git
+	branch = release-4.17
 [submodule "openshift-sdn"]
 	path = openshift-sdn
 	url = git@github.com:dsedg/sdn.git
+	branch = release-4.17
 [submodule "openshift-coredns"]
 	path = openshift-coredns
 	url = git@github.com:dsedg/coredns.git
+	branch = release-4.17
 [submodule "openshift-csi-external-snapshotter"]
 	path = openshift-csi-external-snapshotter
 	url = git@github.com:dsedg/csi-external-snapshotter.git
+	branch = release-4.17
 [submodule "kube-rbac-proxy"]
 	path = kube-rbac-proxy
 	url = git@github.com:dsedg/kube-rbac-proxy.git
+	branch = release-4.17
 [submodule "ovn-kubernetes"]
 	path = ovn-kubernetes
 	url = git@github.com:dsedg/ovn-kubernetes.git
+	branch = release-4.17
 [submodule "openshift-containernetworking-plugins"]
 	path = openshift-containernetworking-plugins
 	url = git@github.com:dsedg/containernetworking-plugins.git
+	branch = release-4.17
 [submodule "openshift-multus-cni"]
 	path = openshift-multus-cni
 	url = git@github.com:dsedg/multus-cni.git
+	branch = release-4.17
 [submodule "kubernetes"]
 	path = kubernetes
 	url = git@github.com:dsedg/kubernetes.git
+	branch = release-4.17
 [submodule "openshift-oc"]
 	path = openshift-oc
 	url = git@github.com:dsedg/oc.git
+	branch = release-4.17
 [submodule "openshift-service-ca-operator"]
 	path = openshift-service-ca-operator
 	url = git@github.com:dsedg/service-ca-operator.git
+	branch = release-4.17

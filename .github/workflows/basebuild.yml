@@ -53,8 +53,8 @@ jobs:
           tags: latest ${{ github.sha }}
           archs: amd64, arm64
           oci: true
-          containerfiles: ./images/base/Dockerfile.rhel9
-          context: ./images/base/
+          containerfiles: ./openshift-images/base/Dockerfile.rhel9
+          context: ./openshift-images/base/
           
       - name: Echo Outputs
         run: |

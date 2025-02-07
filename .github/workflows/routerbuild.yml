@@ -1,0 +1,118 @@
+name: Build router containers
+
+on:
+  workflow_dispatch:
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+  IMAGE_NAME: haproxy-router
+jobs:
+  build:
+    name: build container
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Install cosign
+        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
+        with:
+          cosign-release: 'v2.2.4'
+      - name: Docker Metadata
+        id: docker-metadata
+        uses: docker/metadata-action@v4
+        with:
+            images: |
+              ${{ env.IMAGE_NAME }}
+            tags: |
+              type=sha
+              type=ref,event=branch
+              type=ref,event=pr
+              type=schedule
+              type=semver,pattern={{version}}
+              type=semver,pattern={{major}}.{{minor}}
+              type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+  
+          
+      - name: Docker Metadata
+        id: docker2-metadata
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.IMAGE_NAME }}-base
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=ref,event=pr
+            type=schedule
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build Image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}-base
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-router/base/Dockerfile.ocp
+          context: ./openshift-router/base/
+      - name: Echo Outputs
+        run: |
+            echo "Image: ${{ steps.build_image.outputs.image }}"
+            echo "Tags: ${{ steps.build_image.outputs.tags }}"
+            echo "Tagged Image: ${{ steps.build_image.outputs.image-with-tag }}"  
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push
+        with:
+              image: ${{ steps.build_image.outputs.image }}
+              tags: ${{ steps.build_image.outputs.tags }}
+              registry: ${{ env.REGISTRY }}  
+
+      - name: Build Image
+        id: build_image2
+        uses: redhat-actions/buildah-build@v2
+        with:
+            image: ${{ env.IMAGE_NAME }}
+            tags: latest ${{ github.sha }}
+            archs: amd64, arm64
+            oci: true
+            containerfiles: ./openshift-images/base/Dockerfile.rhel9
+            context: ./openshift-images/base/         
+      - name: Echo Outputs
+        run: |
+          echo "Image: ${{ steps.build_image2.outputs.image }}"
+          echo "Tags: ${{ steps.build_image2.outputs.tags }}"
+          echo "Tagged Image: ${{ steps.build_imag2.outputs.image-with-tag }}"
+          
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push2
+        with:
+          image: ${{ steps.build_image2.outputs.image }}
+          tags: ${{ steps.build_image2.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+
+      - name: Echo outputs
+        run: |
+          echo "${{ toJSON(steps.push.outputs) }}"
+          echo "${{ toJSON(steps.push2.outputs) }}"
+
+      #- name: Sign the published Docker images
+      #  run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${tags}
+       # with: 
+        #  tags: ${{ steps.build_image.outputs.tags }}

@@ -68,8 +68,8 @@ jobs:
           tags: latest ${{ github.sha }}
           archs: amd64, arm64
           oci: true
-          containerfiles: ./openshift-router/base/Dockerfile.ocp
-          context: ./openshift-router/base/
+          containerfiles: ./openshift-router/images/router/base/Dockerfile.ocp
+          context: ./openshift-router/images/router/base/
       - name: Echo Outputs
         run: |
             echo "Image: ${{ steps.build_image.outputs.image }}"
@@ -91,8 +91,8 @@ jobs:
             tags: latest ${{ github.sha }}
             archs: amd64, arm64
             oci: true
-            containerfiles: ./openshift-images/base/Dockerfile.rhel9
-            context: ./openshift-images/base/         
+            containerfiles: ./openshift-router/images/router/haproxy/Dockerfile.ocp
+            context: ./openshift-router/images/router/haproxy/        
       - name: Echo Outputs
         run: |
           echo "Image: ${{ steps.build_image2.outputs.image }}"

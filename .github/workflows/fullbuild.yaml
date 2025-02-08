@@ -1,0 +1,59 @@
+name: Build DDK containers
+
+on:
+  workflow_dispatch:
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+  QUAY:
+  
+jobs:
+  build:
+    name: build containers
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Install cosign
+        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
+        with:
+          cosign-release: 'v2.2.4'        
+          
+      - name: Build base Image
+        id: build_base_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: base
+          tags: latest ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./openshift-images/base/Dockerfile.rhel9
+          context: ./openshift-images/base/
+          
+      - name: Build router base Image
+        id: build_base_router_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: router-base
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-router/images/router/base/Dockerfile.ocp
+          context: ./openshift-router/
+
+      - name: Build Router Haproxy Image
+        id: build_router_haproxy_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+            image: ${{ env.IMAGE_NAME }}
+            tags: latest ${{ github.sha }}
+            archs: amd64, arm64
+            oci: true
+            containerfiles: ./openshift-router/images/router/haproxy/Dockerfile.ocp
+            context: ./openshift-router/

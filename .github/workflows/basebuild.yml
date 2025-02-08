@@ -51,7 +51,6 @@ jobs:
         with:
           image: ${{ env.IMAGE_NAME }}
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
           platforms: linux/amd64, linux/arm64
           oci: true
           containerfiles: ./openshift-images/base/Dockerfile.rhel9

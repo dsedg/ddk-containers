@@ -69,7 +69,7 @@ jobs:
           archs: amd64, arm64
           oci: true
           containerfiles: ./openshift-router/images/router/base/Dockerfile.ocp
-          context: ./openshift-router/images/router/base/
+          context: ./openshift-router/
       - name: Echo Outputs
         run: |
             echo "Image: ${{ steps.build_image.outputs.image }}"
@@ -92,7 +92,7 @@ jobs:
             archs: amd64, arm64
             oci: true
             containerfiles: ./openshift-router/images/router/haproxy/Dockerfile.ocp
-            context: ./openshift-router/images/router/haproxy/        
+            context: ./openshift-router/
       - name: Echo Outputs
         run: |
           echo "Image: ${{ steps.build_image2.outputs.image }}"

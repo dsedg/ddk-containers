@@ -52,6 +52,7 @@ jobs:
           image: ${{ env.IMAGE_NAME }}
           tags: 4.17 ${{ github.sha }}
           archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
           containerfiles: ./openshift-images/base/Dockerfile.rhel9
           context: ./openshift-images/base/

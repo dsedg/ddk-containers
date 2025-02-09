@@ -91,3 +91,57 @@ jobs:
           image: ${{ steps.build_router_haproxy_image.outputs.image }}
           tags: ${{ steps.build_router_haproxy_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+# Build Kube Proxy Image
+      - name: Build router base Image
+        id: build_proxy_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: kube-proxy
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-sdn/images/kube-proxy/Dockerfile.rhel
+          context: ./openshift-sdn/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_proxy_image
+        with:
+          image: ${{ steps.build_proxy_image.outputs.image }}
+          tags: ${{ steps.build_proxy_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build Core DNS Image
+      - name: Build Core DNS Image
+        id: build_dns_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: kube-proxy
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-coredns/Dockerfile.ocp
+          context: ./openshift-coredns/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_dns_image
+        with:
+          image: ${{ steps.build_dns_image.outputs.image }}
+          tags: ${{ steps.build_dns_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build Core DNS Image
+      - name: Build CSI Image
+        id: build_csi_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: kube-proxy
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.openshift
+          context: ./openshift-csi-external-snapshotter/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_csi_image
+        with:
+          image: ${{ steps.build_csi_image.outputs.image }}
+          tags: ${{ steps.build_csi_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}

@@ -53,9 +53,9 @@ jobs:
           registry: ${{ env.REGISTRY }}
       - name: Sign the images with GitHub OIDC Token
         env:
-          PATHS: ${{ steps.build_base_image.outputs.registry-paths }}
+          PATH: ${{ steps.build_base_image.outputs.registry-path }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ steps.build_base_image.outputs.registry-path }}
+        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY $PATH
 # Build Router Images
       - name: Build router base Image
         id: build_base_router_image

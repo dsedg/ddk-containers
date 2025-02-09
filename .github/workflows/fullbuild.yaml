@@ -51,9 +51,6 @@ jobs:
           image: ${{ steps.build_base_image.outputs.image }}
           tags: ${{ steps.build_base_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
-      - name: Echo outputs
-        run: |
-          echo "${{ fromJSON(steps.build_base_image.outputs.registry-paths) }}"
       - name: Sign the images with GitHub OIDC Token
         env:
           PATHS: ${{ steps.build_base_image.outputs.registry-paths }}

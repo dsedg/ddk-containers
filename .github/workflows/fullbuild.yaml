@@ -58,7 +58,7 @@ jobs:
         env:
           PATHS: ${{ steps.build_base_image.outputs.registry-paths }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY env://PATHS
+        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ toJSON(steps.push_base_image.outputs) }}
 # Build Router Images
       - name: Build router base Image
         id: build_base_router_image

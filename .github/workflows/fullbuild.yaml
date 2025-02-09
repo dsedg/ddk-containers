@@ -53,12 +53,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
       - name: Echo outputs
         run: |
-          echo "${{ fromJSON(steps.push_base_image.outputs) }}"
+          echo "${{ fromJSON(steps.build_base_image.outputs.registry-paths) }}"
       - name: Sign the images with GitHub OIDC Token
         env:
           PATHS: ${{ steps.build_base_image.outputs.registry-paths }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ toJSON(steps.push_base_image.outputs) }}
+        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ steps.build_base_image.outputs.registry-path }}
 # Build Router Images
       - name: Build router base Image
         id: build_base_router_image

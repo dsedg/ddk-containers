@@ -20,10 +20,24 @@ jobs:
         uses: docker/setup-qemu-action@v1
         
       - name: Install cosign
-        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
+        uses: sigstore/cosign-installer@v3.8.0
         with:
           cosign-release: 'v2.2.4'        
-          
+      - name: Check install!
+        run: cosign version
+        
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          tags: ${{ steps.build_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+
+      - name: Echo outputs
+        run: |
+          echo "${{ toJSON(steps.push.outputs) }}"
+    
       - name: Build base Image
         id: build_base_image
         uses: redhat-actions/buildah-build@v2
@@ -36,6 +50,13 @@ jobs:
           containerfiles: ./openshift-images/base/Dockerfile.rhel9
           context: ./openshift-images/base/
           
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          tags: ${{ steps.build_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
       - name: Build router base Image
         id: build_base_router_image
         uses: redhat-actions/buildah-build@v2

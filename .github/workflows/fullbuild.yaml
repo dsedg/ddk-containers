@@ -51,11 +51,11 @@ jobs:
           image: ${{ steps.build_base_image.outputs.image }}
           tags: ${{ steps.build_base_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
-      - name: Sign the images with GitHub OIDC Token
-        env:
-          PATH: ${{ steps.build_base_image.outputs.registry-path }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY $PATH
+      #- name: Sign the images with GitHub OIDC Token
+      #  env:
+         # PATH: ${{ steps.build_base_image.outputs.registry-path }}
+          #COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        #run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY $PATH
 # Build Router Images
       - name: Build router base Image
         id: build_base_router_image
@@ -67,7 +67,13 @@ jobs:
           oci: true
           containerfiles: ./openshift-router/images/router/base/Dockerfile.ocp
           context: ./openshift-router/
-
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_base_router_image
+        with:
+          image: ${{ steps.build_base_router_image.outputs.image }}
+          tags: ${{ steps.build_base_router_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
       - name: Build Router Haproxy Image
         id: build_router_haproxy_image
         uses: redhat-actions/buildah-build@v2
@@ -78,3 +84,10 @@ jobs:
             oci: true
             containerfiles: ./openshift-router/images/router/haproxy/Dockerfile.ocp
             context: ./openshift-router/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_router_haproxy_imagee
+        with:
+          image: ${{ steps.build_router_haproxy_image.outputs.image }}
+          tags: ${{ steps.build_router_haproxy_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}

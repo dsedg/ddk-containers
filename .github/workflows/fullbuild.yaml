@@ -53,7 +53,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
       - name: Echo outputs
         run: |
-          echo "${{ toJSON(steps.push_base_image.outputs) }}"
+          echo "${{ fromJSON(steps.push_base_image.outputs) }}"
       - name: Sign the images with GitHub OIDC Token
         env:
           PATHS: ${{ steps.build_base_image.outputs.registry-paths }}

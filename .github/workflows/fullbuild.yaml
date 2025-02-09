@@ -56,12 +56,13 @@ jobs:
         env:
           DIGEST: ${{ steps.push_base_image.outputs.digest }}
           TAGS: ${{ steps.build_base_image.outputs.tags }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         run: |
             images=""
             for tag in ${TAGS}; do
               images+="${tag}@${DIGEST} "
             done
-            cosign sign --yes ${images}    
+            cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}    
 # Build Router Images
       - name: Build router base Image
         id: build_base_router_image

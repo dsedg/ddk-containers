@@ -79,7 +79,7 @@ jobs:
         id: build_router_haproxy_image
         uses: redhat-actions/buildah-build@v2
         with:
-            image: ${{ env.IMAGE_NAME }}
+            image: haproxy-router
             tags: latest ${{ github.sha }}
             platforms: linux/amd64, linux/arm64
             oci: true

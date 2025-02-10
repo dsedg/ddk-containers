@@ -251,3 +251,57 @@ jobs:
           image: ${{ steps.build_openshift_multus_cni_image.outputs.image }}
           tags: ${{ steps.build_openshift_multus_cni_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+# Build Pod Image
+      - name: Build pod Image
+        id: build_pod_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: pod
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./kubernetes/build/pause/Dockerfile.Rhel
+          context: ./kubernetes/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_pod_image
+        with:
+          image: ${{ steps.build_pod_image.outputs.image }}
+          tags: ${{ steps.build_pod_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build cli Image
+      - name: Build cli Image
+        id: build_cli_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: cli
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel
+          context: ./openshift-oc/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_cli_image
+        with:
+          image: ${{ steps.build_cli_image.outputs.image }}
+          tags: ${{ steps.build_cli_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build Service CA Operator Image
+      - name: Build Service CA Operator Image
+        id: build_service_ca_operator_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: service-ca-operator
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel
+          context: ./openshift-oc/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_service_ca_operator_image
+        with:
+          image: ${{ steps.build_service_ca_operator_image.outputs.image }}
+          tags: ${{ steps.build_service_ca_operator_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}

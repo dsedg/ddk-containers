@@ -63,8 +63,9 @@ jobs:
         with:
           image: router-base
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-router/images/router/base/Dockerfile.ocp
           context: ./openshift-router/
       - name: Push To GHCR
@@ -80,8 +81,9 @@ jobs:
         with:
             image: ${{ env.IMAGE_NAME }}
             tags: latest ${{ github.sha }}
-            archs: amd64, arm64
+            platforms: linux/amd64, linux/arm64
             oci: true
+            layers: true
             containerfiles: ./openshift-router/images/router/haproxy/Dockerfile.ocp
             context: ./openshift-router/
       - name: Push To GHCR
@@ -98,8 +100,9 @@ jobs:
         with:
           image: kube-proxy
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-sdn/images/kube-proxy/Dockerfile.rhel
           context: ./openshift-sdn/
       - name: Push To GHCR
@@ -116,8 +119,9 @@ jobs:
         with:
           image: kube-proxy
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-coredns/Dockerfile.ocp
           context: ./openshift-coredns/
       - name: Push To GHCR
@@ -134,8 +138,9 @@ jobs:
         with:
           image: csi-snapshot-controller
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.snapshot-controller.openshift.rhel7
           context: ./openshift-csi-external-snapshotter/
       - name: Push To GHCR
@@ -151,8 +156,9 @@ jobs:
         with:
           image: csi-snapshot-validation-webhook
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.webhook.openshift.rhel7
           context: ./openshift-csi-external-snapshotter/
       - name: Push To GHCR
@@ -169,8 +175,9 @@ jobs:
         with:
           image: kube-rbac-proxy
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-coredns/Dockerfile.ocp
           context: ./openshift-coredns/
       - name: Push To GHCR
@@ -187,8 +194,9 @@ jobs:
         with:
           image: ovn-kubernetes-base
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./ovn-kubernetes/Dockerfile.snapshot-controller.openshift.rhel7
           context: ./ovn-kubernetes/
       - name: Push To GHCR
@@ -204,8 +212,9 @@ jobs:
         with:
           image: ovn-kubernetes-microshift
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./ovn-kubernetes/Dockerfile.webhook.openshift.rhel7
           context: ./ovn-kubernetes/
       - name: Push To GHCR
@@ -222,8 +231,9 @@ jobs:
         with:
           image: kube-rbac-proxy
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-containernetworking-plugins/Dockerfile.microshift
           context: ./openshift-containernetworking-plugins/
       - name: Push To GHCR
@@ -240,8 +250,9 @@ jobs:
         with:
           image: multus-cni-microshift
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-multus-cni/Dockerfile.microshift
           context: ./openshift-multus-cni/
       - name: Push To GHCR
@@ -258,8 +269,9 @@ jobs:
         with:
           image: pod
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./kubernetes/build/pause/Dockerfile.Rhel
           context: ./kubernetes/
       - name: Push To GHCR
@@ -276,8 +288,9 @@ jobs:
         with:
           image: cli
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel
           context: ./openshift-oc/
       - name: Push To GHCR
@@ -294,8 +307,9 @@ jobs:
         with:
           image: service-ca-operator
           tags: latest ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel
           context: ./openshift-oc/
       - name: Push To GHCR

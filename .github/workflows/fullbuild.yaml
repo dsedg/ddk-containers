@@ -127,21 +127,127 @@ jobs:
           image: ${{ steps.build_dns_image.outputs.image }}
           tags: ${{ steps.build_dns_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
-# Build Core DNS Image
-      - name: Build CSI Image
-        id: build_csi_image
+# Build CSI Images
+      - name: Build CSI Controller Image
+        id: build_csi_controller_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: kube-proxy
+          image: csi-snapshot-controller
           tags: latest ${{ github.sha }}
           archs: amd64, arm64
           oci: true
-          containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.openshift
+          containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.snapshot-controller.openshift.rhel7
           context: ./openshift-csi-external-snapshotter/
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
-        id: push_csi_image
+        id: push_csi_controller_image
         with:
-          image: ${{ steps.build_csi_image.outputs.image }}
-          tags: ${{ steps.build_csi_image.outputs.tags }}
+          image: ${{ steps.build_csi_controller_image.outputs.image }}
+          tags: ${{ steps.build_csi_controller_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+      - name: Build CSI Webhook Image
+        id: build_csi_webhook_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: csi-snapshot-validation-webhook
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.webhook.openshift.rhel7
+          context: ./openshift-csi-external-snapshotter/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_csi_webhook_image
+        with:
+          image: ${{ steps.build_csi_webhook_image.outputs.image }}
+          tags: ${{ steps.build_csi_webhook_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build Kube rbac Proxy Image
+      - name: Build Kube rbac Proxy Image
+        id: build_rbac_proxy_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: kube-rbac-proxy
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-coredns/Dockerfile.ocp
+          context: ./openshift-coredns/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_rbac_proxy_image
+        with:
+          image: ${{ steps.build_rbac_proxy_image.outputs.image }}
+          tags: ${{ steps.build_rbac_proxy_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build OVN Images
+      - name: Build OVN Kubernetes Base Image
+        id: build_ovn_kubernetes_base_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ovn-kubernetes-base
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./ovn-kubernetes/Dockerfile.snapshot-controller.openshift.rhel7
+          context: ./ovn-kubernetes/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_ovn_kubernetes_base_image
+        with:
+          image: ${{ steps.build_ovn_kubernetes_base_image.outputs.image }}
+          tags: ${{ steps.build_ovn_kubernetes_base_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+      - name: Build OVN Kubernetes Microshift Image
+        id: build_ovn_kubernetes_microshift_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ovn-kubernetes-microshift
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./ovn-kubernetes/Dockerfile.webhook.openshift.rhel7
+          context: ./ovn-kubernetes/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_ovn_kubernetes_microshift_image
+        with:
+          image: ${{ steps.build_ovn_kubernetes_microshift_image.outputs.image }}
+          tags: ${{ steps.build_ovn_kubernetes_microshift_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build Openshift Containernetworking Plugins Image
+      - name: Build Openshift Containernetworking Plugins Image
+        id: build_openshift_containernetworking_plugins_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: kube-rbac-proxy
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-containernetworking-plugins/Dockerfile.microshift
+          context: ./openshift-containernetworking-plugins/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_openshift_containernetworking_plugins_image
+        with:
+          image: ${{ steps.build_openshift_containernetworking_plugins_image.outputs.image }}
+          tags: ${{ steps.build_openshift_containernetworking_plugins_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build Openshift Multus CNI Image
+      - name: Build Openshift Multus CNI Image
+        id: build_openshift_multus_cni_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: multus-cni-microshift
+          tags: latest ${{ github.sha }}
+          archs: amd64, arm64
+          oci: true
+          containerfiles: ./openshift-multus-cni/Dockerfile.microshift
+          context: ./openshift-multus-cni/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_openshift_multus_cni_image
+        with:
+          image: ${{ steps.build_openshift_multus_cni_image.outputs.image }}
+          tags: ${{ steps.build_openshift_multus_cni_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}

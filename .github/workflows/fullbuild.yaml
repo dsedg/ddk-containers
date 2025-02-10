@@ -117,7 +117,7 @@ jobs:
         id: build_dns_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: kube-proxy
+          image: coredns
           tags: latest ${{ github.sha }}
           platforms: linux/amd64, linux/arm64
           oci: true

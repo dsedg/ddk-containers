@@ -15,7 +15,7 @@ jobs:
         run: |
           echo "Installing"
           sudo apt-get update
-          sudo apt-get install -y podmam buildah skopeo
+          sudo apt-get install -y podman buildah skopeo
           echo "Installing OpenShift CLI"
           curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux-arm64.tar.gz"
           tar -xvf openshift-client-linux.tar.gz

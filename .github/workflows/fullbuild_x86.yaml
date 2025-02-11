@@ -112,7 +112,7 @@ jobs:
         with:
           image: kube-proxy
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64 
           oci: true
           layers: true
           containerfiles: ./openshift-sdn/images/kube-proxy/Dockerfile.rhel
@@ -131,7 +131,7 @@ jobs:
         with:
           image: coredns
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-coredns/Dockerfile.ocp
@@ -150,7 +150,7 @@ jobs:
         with:
           image: csi-snapshot-controller
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.snapshot-controller.openshift.rhel7
@@ -168,7 +168,7 @@ jobs:
         with:
           image: csi-snapshot-validation-webhook
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.webhook.openshift.rhel7
@@ -187,7 +187,7 @@ jobs:
         with:
           image: kube-rbac-proxy
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-coredns/Dockerfile.ocp
@@ -206,7 +206,7 @@ jobs:
         with:
           image: ovn-kubernetes-base
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./ovn-kubernetes/Dockerfile.snapshot-controller.openshift.rhel7
@@ -224,7 +224,7 @@ jobs:
         with:
           image: ovn-kubernetes-microshift
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./ovn-kubernetes/Dockerfile.webhook.openshift.rhel7
@@ -243,7 +243,7 @@ jobs:
         with:
           image: kube-rbac-proxy
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-containernetworking-plugins/Dockerfile.microshift
@@ -262,7 +262,7 @@ jobs:
         with:
           image: multus-cni-microshift
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-multus-cni/Dockerfile.microshift
@@ -281,7 +281,7 @@ jobs:
         with:
           image: pod
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./kubernetes/build/pause/Dockerfile.Rhel
@@ -300,7 +300,7 @@ jobs:
         with:
           image: cli
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel
@@ -319,7 +319,7 @@ jobs:
         with:
           image: service-ca-operator
           tags: latest ${{ github.sha }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           oci: true
           layers: true
           containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel

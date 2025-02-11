@@ -11,6 +11,18 @@ jobs:
     name: build containers
     runs-on: ubuntu-24.04-arm
     steps:
+      - name: Set up Podman, OpenShift CLI, and Skopeo
+        run: |
+          echo "Installing"
+          sudo apt-get update
+          sudo apt-get install -y podmam buildah skopeo
+          sudo apt-get install -y podman buildah skopeo
+          echo "Installing OpenShift CLI"
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux-arm64.tar.gz"
+          tar -xvf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+          sudo mv kubectl /usr/local/bin/
+          rm -f openshift-client-linux.tar.gz
       - name: Check out repository
         uses: actions/checkout@v4
         with:

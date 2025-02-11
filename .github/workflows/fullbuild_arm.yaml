@@ -47,7 +47,7 @@ jobs:
         id: build_base_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: base
+          image: base-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -72,7 +72,7 @@ jobs:
         id: build_base_router_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: router-base
+          image: router-base-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -90,7 +90,7 @@ jobs:
         id: build_router_haproxy_image
         uses: redhat-actions/buildah-build@v2
         with:
-            image: haproxy-router
+            image: haproxy-router-arm
             tags: latest ${{ github.sha }}
             platforms: linux/arm64
             oci: true
@@ -99,7 +99,7 @@ jobs:
             context: ./openshift-router/
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
-        id: push_router_haproxy_imagee
+        id: push_router_haproxy_image
         with:
           image: ${{ steps.build_router_haproxy_image.outputs.image }}
           tags: ${{ steps.build_router_haproxy_image.outputs.tags }}
@@ -109,7 +109,7 @@ jobs:
         id: build_proxy_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: kube-proxy
+          image: kube-proxy-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -125,10 +125,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
 # Build Core DNS Image
       - name: Build Core DNS Image
-        id: build_dns_image
+        id: build_dns_image-arm
         uses: redhat-actions/buildah-build@v2
         with:
-          image: coredns
+          image: coredns-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -147,7 +147,7 @@ jobs:
         id: build_csi_controller_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: csi-snapshot-controller
+          image: csi-snapshot-controller-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -165,7 +165,7 @@ jobs:
         id: build_csi_webhook_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: csi-snapshot-validation-webhook
+          image: csi-snapshot-validation-webhook-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -184,7 +184,7 @@ jobs:
         id: build_rbac_proxy_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: kube-rbac-proxy
+          image: kube-rbac-proxy-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -203,7 +203,7 @@ jobs:
         id: build_ovn_kubernetes_base_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ovn-kubernetes-base
+          image: ovn-kubernetes-base-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -221,7 +221,7 @@ jobs:
         id: build_ovn_kubernetes_microshift_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ovn-kubernetes-microshift
+          image: ovn-kubernetes-microshift-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -240,7 +240,7 @@ jobs:
         id: build_openshift_containernetworking_plugins_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: kube-rbac-proxy
+          image: kube-rbac-proxy-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -259,7 +259,7 @@ jobs:
         id: build_openshift_multus_cni_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: multus-cni-microshift
+          image: multus-cni-microshift-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -278,7 +278,7 @@ jobs:
         id: build_pod_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: pod
+          image: pod-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -297,7 +297,7 @@ jobs:
         id: build_cli_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: cli
+          image: cli-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true
@@ -316,7 +316,7 @@ jobs:
         id: build_service_ca_operator_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: service-ca-operator
+          image: service-ca-operator-arm
           tags: latest ${{ github.sha }}
           platforms: linux/arm64
           oci: true

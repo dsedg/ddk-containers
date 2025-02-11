@@ -208,7 +208,7 @@ jobs:
           platforms: linux/arm64
           oci: true
           layers: true
-          containerfiles: ./ovn-kubernetes/Dockerfile.snapshot-controller.openshift.rhel7
+          containerfiles: ./ovn-kubernetes/Dockerfile.base
           context: ./ovn-kubernetes/
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
@@ -226,7 +226,7 @@ jobs:
           platforms: linux/arm64
           oci: true
           layers: true
-          containerfiles: ./ovn-kubernetes/Dockerfile.webhook.openshift.rhel7
+          containerfiles: ./ovn-kubernetes/Dockerfile.microshift
           context: ./ovn-kubernetes/
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2

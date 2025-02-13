@@ -53,6 +53,7 @@ jobs:
           tags: latest ${{ github.sha }}
           platforms: linux/amd64, linux/arm64
           oci: true
+          layers: true
           containerfiles: ./openshift-images/base/Dockerfile.rhel9
           context: ./openshift-images/base/
           
@@ -73,8 +74,40 @@ jobs:
       - name: Echo outputs
         run: |
           echo "${{ toJSON(steps.push.outputs) }}"
-
-      #- name: Sign the published Docker images
-      #  run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${tags}
-       # with: 
-        #  tags: ${{ steps.build_image.outputs.tags }}
+# Build Router Image
+      - name: Build router base Image
+        id: build_base_router_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: router-base
+          tags: latest ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./openshift-router/images/router/base/Dockerfile.ocp
+          context: ./openshift-router/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_base_router_image
+        with:
+          image: ${{ steps.build_base_router_image.outputs.image }}
+          tags: ${{ steps.build_base_router_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+      - name: Build OVN Kubernetes Base Image
+        id: build_ovn_kubernetes_base_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ovn-kubernetes-base
+          tags: latest ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./ovn-kubernetes/Dockerfile.base
+          context: ./ovn-kubernetes/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_ovn_kubernetes_base_image
+        with:
+          image: ${{ steps.build_ovn_kubernetes_base_image.outputs.image }}
+          tags: ${{ steps.build_ovn_kubernetes_base_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}

@@ -6,7 +6,7 @@ on:
 jobs: 
   base:
     name: Build base images
-    uses: ./.github/workflows/basebuild.yml
+    uses: ./.github/workflows/base_build.yaml
     secrets: inherit
   #build_x86:
    # name: build x86 images

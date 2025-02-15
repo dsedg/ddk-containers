@@ -200,6 +200,11 @@ jobs:
           tags: ${{ steps.build_rbac_proxy_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
 # Build OVN Images
+      - name: copy ovn-kubernetes git ifno into dir
+        run: |
+          mkdir ./ovn-kubernetes/gitinfo 
+          cp .git/modules/ovn-kubernetes/HEAD ./ovn-kubernetes/gitinfo/
+          cp -r .git/modules/ovn-kubernetes/refs ./ovn-kubernetes/gitinfo/
       - name: Build OVN Kubernetes Base Image
         id: build_ovn_kubernetes_base_image
         uses: redhat-actions/buildah-build@v2
@@ -218,6 +223,9 @@ jobs:
           image: ${{ steps.build_ovn_kubernetes_base_image.outputs.image }}
           tags: ${{ steps.build_ovn_kubernetes_base_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./ovn-kubernetes/gitinfo 
+         
       - name: Build OVN Kubernetes Microshift Image
         id: build_ovn_kubernetes_microshift_image
         uses: redhat-actions/buildah-build@v2

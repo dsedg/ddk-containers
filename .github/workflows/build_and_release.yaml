@@ -7,11 +7,12 @@ jobs:
   base:
     name: Build base images
     uses: ./.github/workflows/basebuild.yml
-  build_x86:
-    name: build x86 images
-    uses: ./.github/workflows/fullbuild_x86.yaml
-    needs: base
-  build_arm:
-    name: build x86 images
-    uses: ./.github/workflows/fullbuild_arm.yaml
-    needs: base
+    secrets: inherit
+  #build_x86:
+   # name: build x86 images
+    #uses: ./.github/workflows/fullbuild_x86.yaml
+    #needs: base
+  #build_arm:
+  #  name: build x86 images
+   # uses: ./.github/workflows/fullbuild_arm.yaml
+   # needs: base

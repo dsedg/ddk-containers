@@ -55,7 +55,7 @@ jobs:
           tags: ${{ steps.build_router_haproxy_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
 # Build Kube Proxy Image
-      - name: Build router base Image
+      - name: Build kube proxy Image
         id: build_proxy_image
         uses: redhat-actions/buildah-build@v2
         with:

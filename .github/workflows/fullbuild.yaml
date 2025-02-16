@@ -22,7 +22,19 @@ jobs:
           sudo mv oc /usr/local/bin/
           sudo mv kubectl /usr/local/bin/
           rm -f openshift-client-linux.tar.gz
-          
+      - name: Remove unwanted stuff to free up disk image
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+          sudo docker image prune --all --force
+
+          sudo swapoff -a
+          sudo rm -f /mnt/swapfile
+
       - name: Check out repository
         uses: actions/checkout@v4
         with:

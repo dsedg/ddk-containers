@@ -222,9 +222,7 @@ jobs:
           image: ${{ steps.build_ovn_kubernetes_base_image.outputs.image }}
           tags: ${{ steps.build_ovn_kubernetes_base_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
-      - name: cleanup
-        run: rm -rf ./ovn-kubernetes/gitinfo 
-         
+  
       - name: Build OVN Kubernetes Microshift Image
         id: build_ovn_kubernetes_microshift_image
         uses: redhat-actions/buildah-build@v2
@@ -243,6 +241,10 @@ jobs:
           image: ${{ steps.build_ovn_kubernetes_microshift_image.outputs.image }}
           tags: ${{ steps.build_ovn_kubernetes_microshift_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./ovn-kubernetes/gitinfo 
+         
+          
 # Build Openshift Containernetworking Plugins Image
       - name: Build Openshift Containernetworking Plugins Image
         id: build_openshift_containernetworking_plugins_image

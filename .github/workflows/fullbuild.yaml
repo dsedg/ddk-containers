@@ -294,7 +294,7 @@ jobs:
           oci: true
           layers: true
           containerfiles: ./kubernetes/build/pause/Dockerfile.Rhel
-          context: ./kubernetes/
+          context: ./kubernetes/build/pause/
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
         id: push_pod_image

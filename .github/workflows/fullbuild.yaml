@@ -46,7 +46,7 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
         
       - name: Install cosign
         uses: sigstore/cosign-installer@v3.8.0
@@ -277,6 +277,10 @@ jobs:
           tags: ${{ steps.build_openshift_containernetworking_plugins_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
 # Build Openshift Multus CNI Image
+      - name: copy openshift-multus-cni git info into dir
+        run: |
+          mkdir ./openshift-multus-cni/gitinfo 
+          cp -r .git/modules/openshift-multus-cni/* ./openshift-multus-cni/gitinfo/
       - name: Build Openshift Multus CNI Image
         id: build_openshift_multus_cni_image
         uses: redhat-actions/buildah-build@v2
@@ -295,6 +299,8 @@ jobs:
           image: ${{ steps.build_openshift_multus_cni_image.outputs.image }}
           tags: ${{ steps.build_openshift_multus_cni_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./openshift-multus-cni/gitinfo/
 # Build Pod Image
       - name: Build pod Image
         id: build_pod_image
@@ -315,6 +321,10 @@ jobs:
           tags: ${{ steps.build_pod_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
 # Build cli Image
+      - name: copy openshift-oc git info into dir
+        run: |
+          mkdir ./openshift-oc/gitinfo 
+          cp -r .git/modules/openshift-oc/* ./openshift-oc/gitinfo/
       - name: Build cli Image
         id: build_cli_image
         uses: redhat-actions/buildah-build@v2
@@ -333,6 +343,8 @@ jobs:
           image: ${{ steps.build_cli_image.outputs.image }}
           tags: ${{ steps.build_cli_image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./openshift-oc/gitinfo/
 # Build Service CA Operator Image
       - name: Build Service CA Operator Image
         id: build_service_ca_operator_image

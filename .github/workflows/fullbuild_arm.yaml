@@ -1,4 +1,4 @@
-name: Build DDK containers
+name: Build arm platfrom DDK containers
 
 on:
   workflow_call:

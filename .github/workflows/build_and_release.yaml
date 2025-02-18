@@ -1,4 +1,4 @@
-name: Build and release
+name: Build and release DDK containers
 
 on:
   workflow_dispatch:
@@ -8,11 +8,20 @@ jobs:
     name: Build base images
     uses: ./.github/workflows/base_build.yaml
     secrets: inherit
-  build_x86:
-    name: build x86 images
-    uses: ./.github/workflows/fullbuild_x86.yaml
+  build_group1:
+    name: build first group of images
+    uses: ./.github/workflows/group1.yaml
     needs: base
-  build_arm:
-    name: build x86 images
-    uses: ./.github/workflows/fullbuild_arm.yaml
+  build_group2:
+    name: build first group of images
+    uses: ./.github/workflows/group2.yaml
     needs: base
+  # Future optimization split the builds by ark  
+  #build_x86:
+  #  name: build x86 images
+  #  uses: ./.github/workflows/fullbuild_x86.yaml
+  #  needs: base
+  #build_arm:
+  #  name: build x86 images
+  #  uses: ./.github/workflows/fullbuild_arm.yaml
+  #  needs: base

@@ -1,7 +1,7 @@
 name: Build group 2 of DDK containers test
 
 on:
-  workflow_dispatch:
+  workflow_call:
 env:
   REGISTRY: ghcr.io/${{ github.repository_owner }}
   QUAY:

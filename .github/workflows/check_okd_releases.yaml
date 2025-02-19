@@ -1,7 +1,7 @@
 name: Check okd stable releases
 
 on:
-  workflow_call:
+  workflow_dispatch:
 jobs:
     check:
         name: Get OKD releases and compare to branches

@@ -1,0 +1,18 @@
+name: Build and release DDK containers
+
+on:
+  workflow_dispatch:
+
+jobs: 
+  base:
+    name: Build base images
+    uses: ./.github/workflows/base_build.yaml
+    secrets: inherit
+  build_group1:
+    name: build first group of images
+    uses: ./.github/workflows/group1.yaml
+    needs: base
+  build_group2:
+    name: build first group of images
+    uses: ./.github/workflows/group2.yaml
+    needs: base

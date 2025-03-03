@@ -1,0 +1,190 @@
+name: Build group 1 of DDK containers
+
+on:
+  workflow_call:
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+  QUAY:
+  
+jobs:
+  build:
+    name: build containers
+    runs-on: ubuntu-24.04
+    steps:   
+      - name: Set up Podman, OpenShift CLI, and Skopeo
+        run: |
+          echo "Installing"
+          sudo apt-get update
+          sudo apt-get install -y podman buildah skopeo
+          echo "Installing OpenShift CLI"
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux-arm64.tar.gz"
+          tar -xvf openshift-client-linux-arm64.tar.gz
+          sudo mv oc /usr/local/bin/
+          sudo mv kubectl /usr/local/bin/
+          rm -f openshift-client-linux.tar.gz
+      - name: Remove unwanted stuff to free up disk image
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+          sudo docker image prune --all --force
+
+          sudo swapoff -a
+          sudo rm -f /mnt/swapfile
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+            registry: ${{ env.REGISTRY }}
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
+# Build Router Images
+
+      - name: Build Router Haproxy Image
+        id: build_router_haproxy_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+            image: haproxy-router
+            tags: 4.18 ${{ github.sha }}
+            platforms: linux/amd64, linux/arm64
+            oci: true
+            layers: true
+            containerfiles: ./openshift-router/images/router/haproxy/Dockerfile.ocp
+            context: ./openshift-router/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_router_haproxy_imagee
+        with:
+          image: ${{ steps.build_router_haproxy_image.outputs.image }}
+          tags: ${{ steps.build_router_haproxy_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+
+# Build Core DNS Image
+      - name: Build Core DNS Image
+        id: build_dns_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: coredns
+          tags: 4.18 ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./openshift-coredns/Dockerfile.ocp
+          context: ./openshift-coredns/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_dns_image
+        with:
+          image: ${{ steps.build_dns_image.outputs.image }}
+          tags: ${{ steps.build_dns_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+# Build CSI Images
+
+      - name: Build CSI Webhook Image
+        id: build_csi_webhook_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: csi-snapshot-validation-webhook
+          tags: 4.18 ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./openshift-csi-external-snapshotter/Dockerfile.webhook.openshift.rhel7
+          context: ./openshift-csi-external-snapshotter/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_csi_webhook_image
+        with:
+          image: ${{ steps.build_csi_webhook_image.outputs.image }}
+          tags: ${{ steps.build_csi_webhook_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+
+# Build OVN Images
+      - name: copy ovn-kubernetes git ifno into dir
+        run: |
+          mkdir ./ovn-kubernetes/gitinfo 
+          cp -r .git/modules/ovn-kubernetes/* ./ovn-kubernetes/gitinfo/
+
+      - name: Build OVN Kubernetes Microshift Image
+        id: build_ovn_kubernetes_microshift_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ovn-kubernetes-microshift
+          tags: 4.18 ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./ovn-kubernetes/Dockerfile.microshift
+          context: ./ovn-kubernetes/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_ovn_kubernetes_microshift_image
+        with:
+          image: ${{ steps.build_ovn_kubernetes_microshift_image.outputs.image }}
+          tags: ${{ steps.build_ovn_kubernetes_microshift_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./ovn-kubernetes/gitinfo 
+         
+          
+# Build Openshift Multus CNI Image
+      - name: copy openshift-multus-cni git info into dir
+        run: |
+          mkdir ./openshift-multus-cni/gitinfo 
+          cp -r .git/modules/openshift-multus-cni/* ./openshift-multus-cni/gitinfo/
+      - name: Build Openshift Multus CNI Image
+        id: build_openshift_multus_cni_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: multus-cni-microshift
+          tags: 4.18 ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./openshift-multus-cni/Dockerfile.microshift
+          context: ./openshift-multus-cni/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_openshift_multus_cni_image
+        with:
+          image: ${{ steps.build_openshift_multus_cni_image.outputs.image }}
+          tags: ${{ steps.build_openshift_multus_cni_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./openshift-multus-cni/gitinfo/
+
+# Build cli Image
+      - name: copy openshift-oc git info into dir
+        run: |
+          mkdir ./openshift-oc/gitinfo 
+          cp -r .git/modules/openshift-oc/* ./openshift-oc/gitinfo/
+      - name: Build cli Image
+        id: build_cli_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: cli
+          tags: 4.18 ${{ github.sha }}
+          platforms: linux/amd64, linux/arm64
+          oci: true
+          layers: true
+          containerfiles: ./openshift-oc/images/cli/Dockerfile.rhel
+          context: ./openshift-oc/
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push_cli_image
+        with:
+          image: ${{ steps.build_cli_image.outputs.image }}
+          tags: ${{ steps.build_cli_image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+      - name: cleanup
+        run: rm -rf ./openshift-oc/gitinfo/

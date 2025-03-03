@@ -1,0 +1,6 @@
+{
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/build_and_release.yaml",
+        ".github/workflows/check_okd_releases.yaml"
+    ]
+}

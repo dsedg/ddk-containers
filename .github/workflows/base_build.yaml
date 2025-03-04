@@ -71,7 +71,7 @@ jobs:
         id: build_base_router_image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: router-base
+          image: haproxy-router-base
           tags: latest ${{ github.sha }}
           platforms: linux/amd64, linux/arm64
           oci: true

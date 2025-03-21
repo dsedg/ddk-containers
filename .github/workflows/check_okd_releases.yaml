@@ -24,11 +24,7 @@ jobs:
             sudo apt-get install -y skopeo
         - name: find OKD tags
           run: |
-           {
-             echo 'OKD_TAGS=<<EOF' 
              skopeo inspect docker://quay.io/okd/scos-release:4.17.0-okd-scos.2 | jq '.RepoTags[] |select (test("4.[1-2][6-9].0-okd-scos.[0-9]"))'
-             echo EOF
-           } >> "$GITHUB_ENV"
         - name: get urls
           run: |
             { echo 'OKD_COMMITS=<<EOF'

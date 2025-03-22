@@ -28,6 +28,6 @@ jobs:
         - name: get urls
           run: |
             { echo 'OKD_COMMITS=<<EOF'
-              oc adm release info --commit-urls -f json quay.io/okd/scos-release:4.17.0-okd-scos.2
+              oc adm release info --commit-urls -o json quay.io/okd/scos-release:4.17.0-okd-scos.2
               echo EOF
             } >> '$GITHUB_ENV'
